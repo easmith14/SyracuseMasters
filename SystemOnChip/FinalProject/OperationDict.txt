@@ -1,0 +1,16 @@
+0000	NOP
+0001	ADD
+0010	SUB
+0011	NOR
+0100	LOAD REG -> ACC
+0101	LOAD ACC -> REG
+0110	Z Branch to REG
+0111	Z Branch to IMM
+1000	C Branch to REG
+1001	---------------
+1010	C Branch to IMM
+1011	Shift Left
+1100	Shift Right
+1101	Load IMM -> ACC
+1110	---------------
+1111	HALT

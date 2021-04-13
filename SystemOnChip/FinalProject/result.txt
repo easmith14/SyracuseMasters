@@ -1,0 +1,66 @@
+time =                   10
+OpCode = 0000
+Immediate = 0000
+Acc = 00000000
+CurrRegValue = 00000000
+
+time =                   20
+OpCode = 1101
+Immediate = 0011
+Acc = 00000000
+CurrRegValue = xxxxxxxx
+
+time =                   30
+OpCode = 0101
+Immediate = 0001
+Acc = 00000011
+CurrRegValue = xxxxxxxx
+
+time =                   40
+OpCode = 1101
+Immediate = 0101
+Acc = 00000011
+CurrRegValue = xxxxxxxx
+
+time =                   50
+OpCode = 0010
+Immediate = 0001
+Acc = 00000101
+CurrRegValue = 00000011
+
+time =                   60
+OpCode = 0101
+Immediate = 0001
+Acc = 11111110
+CurrRegValue = 00000011
+
+time =                   70
+OpCode = 0111
+Immediate = 0110
+Acc = 11111110
+CurrRegValue = xxxxxxxx
+
+time =                   80
+OpCode = 1101
+Immediate = 0000
+Acc = 11111110
+CurrRegValue = xxxxxxxx
+
+time =                   90
+OpCode = 0111
+Immediate = 0110
+Acc = 00000000
+CurrRegValue = xxxxxxxx
+
+time =                  100
+OpCode = 1111
+Immediate = 0000
+Acc = 00000000
+CurrRegValue = xxxxxxxx
+
+time =                  110
+OpCode = 1111
+Immediate = 0000
+Acc = 00000000
+CurrRegValue = xxxxxxxx
+

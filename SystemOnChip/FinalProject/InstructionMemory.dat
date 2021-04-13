@@ -1,0 +1,10 @@
+//Sample Program - a For-Loop!
+11010011 //0-	Load 8
+01010001 //1-	Store in Reg1
+11010101 //2-	Load 4
+00100001 //3-	Subtract Acc from Reg1
+01010001 //4-	Store in Reg1
+01110110 //5-	Z Jump to Instruction 8 (end)
+11010000 //6-	Load 0
+01110110 //7-	Z Jump to Instruction 2
+11110000 //8-	HALT
