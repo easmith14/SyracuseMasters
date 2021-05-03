@@ -1,0 +1,25 @@
+start: LOADI_I 1 12
+loadi_d 2 2.15
+Adda_I 2 2 1
+subi_I 2 2 6
+LOADI_I 1 12
+loadi_d 2 2.15
+Adda_I 2 2 1
+subi_I 2 2 6
+LOADI_I 1 12
+loadi_d 2 2.15
+Adda_I 2 2 1
+subi_I 2 2 6
+LOADI_I 1 12
+loadi_d 2 2.15
+Adda_I 2 2 1
+subi_I 2 2 6
+LOADI_I 1 12
+loadi_d 2 2.15
+Adda_I 2 2 1
+subi_I 2 2 6
+LOADI_I 1 12
+loadi_d 2 2.15
+Adda_I 2 2 1
+subi_I 2 2 6
+end

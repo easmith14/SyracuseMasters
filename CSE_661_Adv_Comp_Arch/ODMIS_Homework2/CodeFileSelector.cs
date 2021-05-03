@@ -24,18 +24,19 @@ namespace ODMIS_Homework2
 
         public string GetUserFileSelection()
         {
-            Console.WriteLine("--------------------------------------");
+            int dashCount = 57;
+            Console.WriteLine(new string('-', dashCount));
             Console.WriteLine("Select the file to run:");
-            Console.WriteLine("--------------------------------------");
+            Console.WriteLine(new string('-', dashCount));
 
             //write out all file options
             int choiceNumber = 1;
             foreach(var file in mFileOptions)
             {
-                Console.WriteLine($"[{choiceNumber++}] {Path.GetFileNameWithoutExtension(file)}");
+                Console.WriteLine($"[{choiceNumber++}]  {Path.GetFileNameWithoutExtension(file),-30}{File.GetLastWriteTime(file), -20}");
             }
 
-            Console.WriteLine("--------------------------------------\n([0] to refresh, [-1] to exit)\n\n");
+            Console.WriteLine(new string('-', dashCount) + "\n([0] to refresh, [-1] to exit)\n\n");
 
             string choice = "";
 
@@ -44,7 +45,10 @@ namespace ODMIS_Homework2
                 Console.Write("Your Choice: ");
                 string rawUserChoice = Console.ReadLine();
 
-                int userChoice = Convert.ToInt32(rawUserChoice);
+
+                int userChoice = 1;
+                Int32.TryParse(rawUserChoice, out userChoice);
+
                 if(userChoice <= mFileOptions.Count && userChoice > 0)
                 {
                     choice = mFileOptions[userChoice-1];
@@ -52,6 +56,7 @@ namespace ODMIS_Homework2
                 else if(userChoice == 0)
                 {
                     RefreshFileOptions();
+                    Console.Clear();
                     //yes, this can cause a stack overflow. I choose to ignore this for simplicity :)
                     return GetUserFileSelection();
                 }

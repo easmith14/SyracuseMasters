@@ -26,6 +26,10 @@ namespace ODMIS_Homework2
                 //if there is a label, log it and store non-label part as instruction
                 if(parts.Length == 2)
                 {
+                    if (labels.ContainsKey(parts[0]))
+                    {
+                        throw new ArgumentException($"The label {parts[0]} is repeated!");
+                    }
                     labels.Add(parts[0], i);
                     instructions.Add(parts[1].Trim());
                 }
