@@ -413,7 +413,7 @@ namespace ODMIS_Homework2
 
             for (int i=0; i<mState.Registers.Count; i++)
             {
-                string ind = mState.ProgramCounter-1 == i ? ">" : "";
+                string ind = mState.ProgramCounter == i ? ">" : "";
                 int instructionIndex = i + firstInstructionToShow;
 
                 string binInstr = "";
@@ -466,7 +466,6 @@ namespace ODMIS_Homework2
         {
             return Convert.ToString(val, 2).PadLeft(word, '0');
         }
-
         private string formatRegToBin(Tuple<int,int> register)
         {
             string binVal = Convert.ToString(register.Item1, 2);
@@ -474,7 +473,6 @@ namespace ODMIS_Homework2
 
             return $"{binVal} {binRegVal.Substring(0, 4)} {binRegVal.Substring(4,4)}";
         }
-
         private decimal valFromRegister(Tuple<int, int> register)
         {
             if(register.Item1 == 0)
@@ -486,18 +484,15 @@ namespace ODMIS_Homework2
                 return decFromRegVal(register.Item2);
             }
         }
-
         private int intFromArgs(int arg1, int arg2)
         {
             return (arg1 * 16) + arg2;
         }
-
         private decimal decFromArgs(int arg1, int arg2)
         {
             string repVal = $"{arg1}.{arg2}";
             return Convert.ToDecimal(repVal);
         }
-
         private decimal decFromRegVal(int val)
         {
             string binWord = formatIntToBinWord(val, 8);
@@ -505,7 +500,6 @@ namespace ODMIS_Homework2
             int arg2 = Convert.ToInt32(binWord.Substring(4, 4));
             return decFromArgs(arg1, arg2);
         }
-
         private Tuple<int,int> regFromArgs(int arg1, int arg2, bool isDecimal)
         {
             if (isDecimal)
@@ -517,12 +511,10 @@ namespace ODMIS_Homework2
                 return Tuple.Create(0, intFromArgs(arg1, arg2));
             }
         }
-
         private Tuple<int, int> regFromVal(int val)
         {
             return Tuple.Create(0, val);
         }
-
         private Tuple<int, int> regFromVal(decimal val)
         {
             int wholePart = (int)val;

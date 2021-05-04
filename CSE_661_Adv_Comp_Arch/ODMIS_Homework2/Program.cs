@@ -53,15 +53,19 @@ namespace ODMIS_Homework2
                 var options = new List<ConsoleKey>() { ConsoleKey.Enter, ConsoleKey.Escape, ConsoleKey.UpArrow, ConsoleKey.DownArrow };
 
                 //display program for user to decide if it's what they want to run
-                processor.PrintSystemState();
-                var userInput = getUserKeyConstrained(instructionPrompt, options);
+/*                processor.PrintSystemState();
+                var userInput = getUserKeyConstrained(instructionPrompt, options);*/
 
 
                 bool programRunning = true;
                 int firstInstructionToShow = 0;
+                var userInput = ConsoleKey.Spacebar;
 
                 while (programRunning)
                 {
+                    processor.PrintSystemState();
+                    //get user input - continue or exit
+                    userInput = getUserKeyConstrained(instructionPrompt, options);
                     try
                     {
                         if (userInput == ConsoleKey.Enter)
@@ -80,13 +84,10 @@ namespace ODMIS_Homework2
                             firstInstructionToShow = Math.Min(firstInstructionToShow + 3, parsedInstructions.Count - 6);
                             processor.PrintSystemState(firstInstructionToShow);
                         }
-                        else
+                        else if(userInput == ConsoleKey.Escape)
                         {
                             break;
                         }
-
-                        //get user input - continue or exit
-                        userInput = getUserKeyConstrained(instructionPrompt, options);
                     }
                     catch (Exception e)
                     {
