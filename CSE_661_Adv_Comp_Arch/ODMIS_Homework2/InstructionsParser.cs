@@ -9,8 +9,8 @@ namespace ODMIS_Homework2
     {
         Dictionary<OpCode, List<int>> mOpCodeExpansionLookup = new Dictionary<OpCode, List<int>>()
         {
-            {OpCode.LOADA_M,    new List<int>(){1} },
-            {OpCode.LOADA_R,    new List<int>(){1} },
+            {OpCode.LOADA_M,    new List<int>(){1,1} },
+            {OpCode.LOADA_R,    new List<int>(){1,1} },
             {OpCode.LOADI_I,    new List<int>(){1,2} },
             {OpCode.LOADI_D,    new List<int>(){1,2} },
             {OpCode.STORE_M,    new List<int>(){1,1} },
@@ -31,11 +31,11 @@ namespace ODMIS_Homework2
             {OpCode.DIVI_D,     new List<int>(){1,1,2} },
             {OpCode.MULI_I,     new List<int>(){1,1,2} },
             {OpCode.MULI_D,     new List<int>(){1,1,2} },
-            {OpCode.ROOT_I,     new List<int>(){1,1,1} },
-            {OpCode.ROOT_D,     new List<int>(){1,1,1} },
-            {OpCode.CEIL,       new List<int>(){1,1,1} },
-            {OpCode.FLOOR,      new List<int>(){1,1,1} },
-            {OpCode.ROUND,      new List<int>(){1,1,1} },
+            {OpCode.ROOT_I,     new List<int>(){1,1} },
+            {OpCode.ROOT_D,     new List<int>(){1,1} },
+            {OpCode.CEIL,       new List<int>(){1,1} },
+            {OpCode.FLOOR,      new List<int>(){1,1} },
+            {OpCode.ROUND,      new List<int>(){1,1} },
             {OpCode.RAND_I,     new List<int>(){1} },
             {OpCode.RAND_D,     new List<int>(){1} },
             {OpCode.PI,         new List<int>(){1} },
@@ -47,66 +47,26 @@ namespace ODMIS_Homework2
             {OpCode.JUMP_GTE,   new List<int>(){1,1,1} },
             {OpCode.JUMP_GT,    new List<int>(){1,1,1} },
             {OpCode.JUMP_EQ,    new List<int>(){1,1,1} },
-            {OpCode.ORA_R,        new List<int>(){1,1,1} },
-            {OpCode.ORI_I,        new List<int>(){1,1,2} },
-            {OpCode.ANDA_R,       new List<int>(){1,1,1} },
-            {OpCode.ANDI_I,       new List<int>(){1,1,2} },
-            {OpCode.NOTA_R,       new List<int>(){1,1,1} },
-            {OpCode.NOT_I,       new List<int>(){1,1,2} },
+            {OpCode.ORA_R,      new List<int>(){1,1,1} },
+            {OpCode.ORI_I,      new List<int>(){1,1,2} },
+            {OpCode.ANDA_R,     new List<int>(){1,1,1} },
+            {OpCode.ANDI_I,     new List<int>(){1,1,2} },
+            {OpCode.NOTA_R,     new List<int>(){1,1} },
+            {OpCode.NOT_I,      new List<int>(){1,2} },
             {OpCode.TERN_LTE,   new List<int>(){1,1,1,1,1} },
             {OpCode.TERN_LT,    new List<int>(){1,1,1,1,1} },
             {OpCode.TERN_GTE,   new List<int>(){1,1,1,1,1} },
             {OpCode.TERN_GT,    new List<int>(){1,1,1,1,1} },
             {OpCode.TERN_EQ,    new List<int>(){1,1,1,1,1} },
             {OpCode.TIME,       new List<int>(){1} },
-            {OpCode.END,  new List<int>(){} }
-        };
-        Dictionary<int, HashSet<OpCode>> mOpCodeValidationLookup = new Dictionary<int, HashSet<OpCode>>()
-        {
-            {1,  new HashSet<OpCode>()
-                {
-                    OpCode.LOADA_M, OpCode.LOADA_R, OpCode.RAND_I,  OpCode.RAND_D,
-                    OpCode.PI,      OpCode.CLEAR_R, OpCode.CLEAR_M, OpCode.JUMP,
-                    OpCode.TIME
-                } 
-            },
-            {2, new HashSet<OpCode>()
-                {
-                    OpCode.LOADI_I, OpCode.LOADI_D, OpCode.STORE_M, OpCode.STORE_R
-                }
-            },
-            {3, new HashSet<OpCode>()
-                {
-                OpCode.ADDA_I,  OpCode.ADDA_D,  OpCode.SUBA_I,  OpCode.SUBA_D,
-                OpCode.DIVA_I,  OpCode.DIVA_D,  OpCode.MULA_I,  OpCode.MULA_D,
-                OpCode.ROOT_I,  OpCode.ROOT_D,  OpCode.CEIL,    OpCode.FLOOR,
-                OpCode.ROUND,   OpCode.JUMP_LTE,OpCode.JUMP_LT, OpCode.JUMP_GTE,
-                OpCode.JUMP_GT, OpCode.JUMP_EQ, OpCode.ORA_R,     OpCode.ANDA_R,
-                OpCode.NOTA_R
-                }
-            },
-            {4, new HashSet<OpCode>()
-                {
-                OpCode.ADDI_I,  OpCode.ADDI_D,  OpCode.SUBI_I,  OpCode.SUBI_D,
-                OpCode.DIVI_I,  OpCode.DIVI_D,  OpCode.MULI_I,  OpCode.MULI_D,
-                OpCode.ORI_I,     OpCode.ANDI_I,    OpCode.NOT_I
-                }
-            },
-            {5, new HashSet<OpCode>()
-                {
-                OpCode.TERN_LTE,OpCode.TERN_LT, OpCode.TERN_GTE,OpCode.TERN_GT,
-                OpCode.TERN_EQ
-                }
-            }
+            {OpCode.END,        new List<int>(){} }
         };
         private const int MAX_ARGUMENT_VALUE = 15;
 
-        private Dictionary<string, int> mLabels;
         private List<string> mRawInstructions;
 
-        public InstructionsParser(Dictionary<string, int> labels, List<string> rawInstructions)
+        public InstructionsParser(List<string> rawInstructions)
         {
-            mLabels = labels;
             mRawInstructions = rawInstructions;
         }
 
@@ -142,7 +102,7 @@ namespace ODMIS_Homework2
             //validate that the instruction has the proper number of arguments
             if(expansionKey.Count != components.Length - 1)
             {
-                throw new ArgumentException($"An incorrect number of arguments, {components.Length} " +
+                throw new ArgumentException($"An incorrect number of arguments, {components.Length - 1} " +
                     $"supplied for opcode {opcode} (expects {expansionKey.Count})");
             }
 

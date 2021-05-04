@@ -1,0 +1,7 @@
+loadi_i 0 0
+loadi_i 1 3
+loop: jump_GTE endloop 0 1
+addi_i 0 0 1
+jump loop
+endloop: store_m 0 0
+end

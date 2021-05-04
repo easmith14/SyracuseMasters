@@ -26,110 +26,363 @@ namespace ODMIS_Homework2
             //update PC pointer indicator naively
             mState.ProgramCounter++;
 
-            //update registers
-            //update memory
+            //store args more conveniently
+            int arg1 = instruction.Args[0];
+            int arg2 = instruction.Args[1];
+            int arg3 = instruction.Args[2];
+            int arg4 = instruction.Args[3];
+            int arg5 = instruction.Args[4];
 
+            //temporart register variables to streamline code
+            var reg1 = Tuple.Create<int,int>(-1, -1);
+            var reg2 = Tuple.Create<int, int>(-1, -1);
+            var reg3 = Tuple.Create<int, int>(-1, -1);
+            var reg4 = Tuple.Create<int, int>(-1, -1);
+
+            //update registers and memory depending on the operation selected
             switch (instruction.OpCode)
             {
                 case OpCode.LOADA_M:
+                    mState.Registers[arg1] = mState.Memory[arg2];
                     break;
                 case OpCode.LOADA_R:
+                    mState.Registers[arg1] = mState.Registers[arg2];
                     break;
                 case OpCode.LOADI_I:
+                    mState.Registers[arg1] = regFromArgs(arg2, arg3, false);
                     break;
                 case OpCode.LOADI_D:
+                    mState.Registers[arg1] = regFromArgs(arg2, arg3, true);
                     break;
                 case OpCode.STORE_M:
+                    mState.Memory[arg1] = mState.Memory[arg2];
                     break;
                 case OpCode.STORE_R:
+                    mState.Memory[arg1] = mState.Registers[arg2];
                     break;
                 case OpCode.ADDA_I:
-                    break;
-                case OpCode.SUBA_I:
-                    break;
-                case OpCode.SUBA_D:
-                    break;
-                case OpCode.DIVA_I:
-                    break;
-                case OpCode.DIVA_D:
-                    break;
-                case OpCode.MULA_I:
-                    break;
-                case OpCode.MULA_D:
-                    break;
-                case OpCode.ADDI_I:
-                    break;
-                case OpCode.ADDI_D:
-                    break;
-                case OpCode.SUBI_I:
-                    break;
-                case OpCode.SUBI_D:
-                    break;
-                case OpCode.DIVI_I:
-                    break;
-                case OpCode.DIVI_D:
-                    break;
-                case OpCode.MULI_I:
-                    break;
-                case OpCode.MULI_D:
-                    break;
-                case OpCode.ROOT_I:
-                    break;
-                case OpCode.ROOT_D:
-                    break;
-                case OpCode.CEIL:
-                    break;
-                case OpCode.FLOOR:
-                    break;
-                case OpCode.ROUND:
-                    break;
-                case OpCode.RAND_I:
-                    break;
-                case OpCode.RAND_D:
-                    break;
-                case OpCode.PI:
-                    break;
-                case OpCode.CLEAR_R:
-                    break;
-                case OpCode.CLEAR_M:
-                    break;
-                case OpCode.JUMP:
-                    break;
-                case OpCode.JUMP_LTE:
-                    break;
-                case OpCode.JUMP_LT:
-                    break;
-                case OpCode.JUMP_GTE:
-                    break;
-                case OpCode.JUMP_GT:
-                    break;
-                case OpCode.JUMP_EQ:
-                    break;
-                case OpCode.ORA_R:
-                    break;
-                case OpCode.ORI_I:
-                    break;
-                case OpCode.ANDA_R:
-                    break;
-                case OpCode.ANDI_I:
-                    break;
-                case OpCode.NOTA_R:
-                    break;
-                case OpCode.NOT_I:
-                    break;
-                case OpCode.TERN_LTE:
-                    break;
-                case OpCode.TERN_LT:
-                    break;
-                case OpCode.TERN_GTE:
-                    break;
-                case OpCode.TERN_GT:
-                    break;
-                case OpCode.TERN_EQ:
-                    break;
-                case OpCode.TIME:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    if(reg1.Item1 == 1 || reg2.Item1 == 1)
+                    {
+                        throw new Exception("Attempted to add a decimal value using an integer instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 + reg2.Item2);
                     break;
                 case OpCode.ADDA_D:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    if (reg1.Item1 == 0 || reg2.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to add an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(decFromRegVal(reg1.Item2) + decFromRegVal(reg2.Item2));
+                    break;
+                case OpCode.SUBA_I:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    if (reg1.Item1 == 1 || reg2.Item1 == 1)
+                    {
+                        throw new Exception("Attempted to subtract a decimal value using an integer instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 - reg2.Item2);
+                    break;
+                case OpCode.SUBA_D:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    if (reg1.Item1 == 0 || reg2.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to subtract an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(decFromRegVal(reg1.Item2) - decFromRegVal(reg2.Item2));
+                    break;
+                case OpCode.DIVA_I:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    if (reg1.Item1 == 1 || reg2.Item1 == 1)
+                    {
+                        throw new Exception("Attempted to divide a decimal value using an integer instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 / reg2.Item2);
+                    break;
+                case OpCode.DIVA_D:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    if (reg1.Item1 == 0 || reg2.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to divide an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(decFromRegVal(reg1.Item2) / decFromRegVal(reg2.Item2));
+                    break;
+                case OpCode.MULA_I:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    if (reg1.Item1 == 1 || reg2.Item1 == 1)
+                    {
+                        throw new Exception("Attempted to multiply a decimal value using an integer instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 * reg2.Item2);
+                    break;
+                case OpCode.MULA_D:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    if (reg1.Item1 == 0 || reg2.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to multiply an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(decFromRegVal(reg1.Item2) * decFromRegVal(reg2.Item2));
+                    break;
+                case OpCode.ADDI_I:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 1)
+                    {
+                        throw new Exception("Attempted to add a decimal value using an integer instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 + intFromArgs(arg3,arg4));
+                    break;
+                case OpCode.ADDI_D:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to add an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(decFromRegVal(reg1.Item2) + decFromArgs(arg3, arg4));
+                    break;
+                case OpCode.SUBI_I:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 1)
+                    {
+                        throw new Exception("Attempted to subtract a decimal value using an integer instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 - intFromArgs(arg3, arg4));
+                    break;
+                case OpCode.SUBI_D:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to subtract an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(decFromRegVal(reg1.Item2) - decFromArgs(arg3, arg4));
+                    break;
+                case OpCode.DIVI_I:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 1)
+                    {
+                        throw new Exception("Attempted to divide a decimal value using an integer instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 / intFromArgs(arg3, arg4));
+                    break;
+                case OpCode.DIVI_D:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to divide an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(decFromRegVal(reg1.Item2) / decFromArgs(arg3, arg4));
+                    break;
+                case OpCode.MULI_I:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 1)
+                    {
+                        throw new Exception("Attempted to multiply a decimal value using an integer instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 * intFromArgs(arg3, arg4));
+                    break;
+                case OpCode.MULI_D:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to multiply an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal(decFromRegVal(reg1.Item2) * decFromArgs(arg3, arg4));
+                    break;
+                case OpCode.ROOT_I:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 1)
+                    {
+                        throw new Exception("Attempted to take the root of a decimal value using an integer instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal((int)Math.Sqrt(reg1.Item2));
+                    break;
+                case OpCode.ROOT_D:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to take the root of an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal((decimal)Math.Sqrt((double)decFromRegVal(reg1.Item2)));
+                    break;
+                case OpCode.CEIL:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to take the ceiling of an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal((int)Math.Ceiling((double)decFromRegVal(reg1.Item2)));
+                    break;
+                case OpCode.FLOOR:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to take the floor of an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal((int)Math.Floor((double)decFromRegVal(reg1.Item2)));
+                    break;
+                case OpCode.ROUND:
+                    reg1 = mState.Registers[arg2];
+                    if (reg1.Item1 == 0)
+                    {
+                        throw new Exception("Attempted to round an integer value using a decimal instruction");
+                    }
+                    mState.Registers[arg1] = regFromVal((int)Math.Round((double)decFromRegVal(reg1.Item2)));
+                    break;
+                case OpCode.RAND_I:
+                    mState.Registers[arg1] = regFromVal(new Random().Next(0, 512));
+                    break;
+                case OpCode.RAND_D:
+                    var rand = new Random();
+
+                    int wholePart = rand.Next(0, 15);
+                    int decimalPart = rand.Next(0, 15);
+                    string randStr = $"{wholePart}.{decimalPart}";
+
+                    mState.Registers[arg1] = regFromVal(Convert.ToDecimal(randStr));
+                    break;
+                case OpCode.PI:
+                    mState.Registers[arg1] = regFromVal((decimal)3.14);
+                    break;
+                case OpCode.CLEAR_R:
+                    mState.Registers[arg1] = regFromVal(0);
+                    break;
+                case OpCode.CLEAR_M:
+                    mState.Memory[arg1] = regFromVal(0);
+                    break;
+                case OpCode.JUMP:
+                    mState.ProgramCounter = arg1;
+                    break;
+                case OpCode.JUMP_LTE:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+
+                    if(valFromRegister(reg1) <= valFromRegister(reg2))
+                    {
+                        mState.ProgramCounter = arg1;
+                    }
+                    break;
+                case OpCode.JUMP_LT:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+
+                    if (valFromRegister(reg1) < valFromRegister(reg2))
+                    {
+                        mState.ProgramCounter = arg1;
+                    }
+                    break;
+                case OpCode.JUMP_GTE:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+
+                    if (valFromRegister(reg1) >= valFromRegister(reg2))
+                    {
+                        mState.ProgramCounter = arg1;
+                    }
+                    break;
+                case OpCode.JUMP_GT:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+
+                    if (valFromRegister(reg1) > valFromRegister(reg2))
+                    {
+                        mState.ProgramCounter = arg1;
+                    }
+                    break;
+                case OpCode.JUMP_EQ:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+
+                    if (valFromRegister(reg1) == valFromRegister(reg2))
+                    {
+                        mState.ProgramCounter = arg1;
+                    }
+                    break;
+                case OpCode.ORA_R:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 | reg2.Item2);
+                    break;
+                case OpCode.ORI_I:
+                    reg1 = mState.Registers[arg2];
+
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 | intFromArgs(arg3, arg4));
+                    break;
+                case OpCode.ANDA_R:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 & reg2.Item2);
+                    break;
+                case OpCode.ANDI_I:
+                    reg1 = mState.Registers[arg2];
+
+                    mState.Registers[arg1] = regFromVal(reg1.Item2 & intFromArgs(arg3, arg4));
+                    break;
+                case OpCode.NOTA_R:
+                    reg1 = mState.Registers[arg2];
+
+                    mState.Registers[arg1] = regFromVal(~reg1.Item2);
+                    break;
+                case OpCode.NOT_I:
+                    mState.Registers[arg1] = regFromVal(~intFromArgs(arg2,arg3));
+                    break;
+                case OpCode.TERN_LTE:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    reg3 = mState.Registers[arg4];
+                    reg4 = mState.Registers[arg5];
+
+                    mState.Registers[arg1] = regFromVal(valFromRegister(reg1) <= valFromRegister(reg2) ?
+                                                        valFromRegister(reg3) : valFromRegister(reg4));
+
+                    break;
+                case OpCode.TERN_LT:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    reg3 = mState.Registers[arg4];
+                    reg4 = mState.Registers[arg5];
+
+                    mState.Registers[arg1] = regFromVal(valFromRegister(reg1) < valFromRegister(reg2) ?
+                                                        valFromRegister(reg3) : valFromRegister(reg4));
+                    break;
+                case OpCode.TERN_GTE:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    reg3 = mState.Registers[arg4];
+                    reg4 = mState.Registers[arg5];
+
+                    mState.Registers[arg1] = regFromVal(valFromRegister(reg1) >= valFromRegister(reg2) ?
+                                                        valFromRegister(reg3) : valFromRegister(reg4));
+                    break;
+                case OpCode.TERN_GT:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    reg3 = mState.Registers[arg4];
+                    reg4 = mState.Registers[arg5];
+
+                    mState.Registers[arg1] = regFromVal(valFromRegister(reg1) > valFromRegister(reg2) ?
+                                                        valFromRegister(reg3) : valFromRegister(reg4));
+                    break;
+                case OpCode.TERN_EQ:
+                    reg1 = mState.Registers[arg2];
+                    reg2 = mState.Registers[arg3];
+                    reg3 = mState.Registers[arg4];
+                    reg4 = mState.Registers[arg5];
+
+                    mState.Registers[arg1] = regFromVal(valFromRegister(reg1) == valFromRegister(reg2) ?
+                                                        valFromRegister(reg3) : valFromRegister(reg4));
+                    break;
+                case OpCode.TIME:
+                    mState.Registers[arg1] = regFromVal(DateTime.Now.Ticks % 512);
                     break;
                 case OpCode.END:
                     //finish program
@@ -140,10 +393,8 @@ namespace ODMIS_Homework2
             return true;
         }
 
-        //todo: add scrollability here
         public void PrintSystemState(int firstInstructionToShow = 0)
         {
-            const int TOTAL_VISIBLE_INSTR = 16;
             const int lineSp = -4;
             const int indSp = 1;
             const int instrSp = -23;
@@ -222,6 +473,81 @@ namespace ODMIS_Homework2
             string binRegVal = Convert.ToString(register.Item2, 2).PadLeft(8, '0');
 
             return $"{binVal} {binRegVal.Substring(0, 4)} {binRegVal.Substring(4,4)}";
+        }
+
+        private decimal valFromRegister(Tuple<int, int> register)
+        {
+            if(register.Item1 == 0)
+            {
+                return (decimal)register.Item2;
+            }
+            else
+            {
+                return decFromRegVal(register.Item2);
+            }
+        }
+
+        private int intFromArgs(int arg1, int arg2)
+        {
+            return (arg1 * 16) + arg2;
+        }
+
+        private decimal decFromArgs(int arg1, int arg2)
+        {
+            string repVal = $"{arg1}.{arg2}";
+            return Convert.ToDecimal(repVal);
+        }
+
+        private decimal decFromRegVal(int val)
+        {
+            string binWord = formatIntToBinWord(val, 8);
+            int arg1 = Convert.ToInt32(binWord.Substring(0, 4));
+            int arg2 = Convert.ToInt32(binWord.Substring(4, 4));
+            return decFromArgs(arg1, arg2);
+        }
+
+        private Tuple<int,int> regFromArgs(int arg1, int arg2, bool isDecimal)
+        {
+            if (isDecimal)
+            {
+                return Tuple.Create(1, intFromArgs(arg1, arg2));
+            }
+            else
+            {
+                return Tuple.Create(0, intFromArgs(arg1, arg2));
+            }
+        }
+
+        private Tuple<int, int> regFromVal(int val)
+        {
+            return Tuple.Create(0, val);
+        }
+
+        private Tuple<int, int> regFromVal(decimal val)
+        {
+            int wholePart = (int)val;
+
+            decimal potentialFractionalPart = val - wholePart;
+            int fractionalPart = 0;
+
+            //if fraction starts with 1, we can take 2 digits
+            if ((int)(fractionalPart * 10) == 1)
+            {
+                fractionalPart = (int)(fractionalPart * 100);
+
+                //we round to our nearest approximation of the decimal value
+                if (fractionalPart > 15)
+                {
+                    fractionalPart = 15;
+                }
+            }
+            //else take just first digit
+            else
+            {
+                fractionalPart = (int)(potentialFractionalPart * 10);
+            }
+
+            return Tuple.Create(1, intFromArgs(wholePart, fractionalPart));
         }
     }
 }

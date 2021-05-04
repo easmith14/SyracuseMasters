@@ -23,7 +23,6 @@ namespace ODMIS_Homework2
                 }
                 
                 List<string> cleanedInstructions;
-                Dictionary<string, int> labels;
 
                 //parse list of cleaned instructions into list of instruction objects
                 var parsedInstructions = new List<Instruction>();
@@ -34,9 +33,9 @@ namespace ODMIS_Homework2
                     var rawInstructions = new List<string>(File.ReadAllLines(instructionFile));
 
                     var labelParser = new LabelParser(rawInstructions);
-                    labelParser.Parse(out cleanedInstructions, out labels);
+                    cleanedInstructions = labelParser.Parse();
 
-                    var instructionParser = new InstructionsParser(labels, cleanedInstructions);
+                    var instructionParser = new InstructionsParser(cleanedInstructions);
                     parsedInstructions = instructionParser.ParseAll();
                 }
                 catch (Exception e)
