@@ -1,4 +1,4 @@
-LOADI_I 1 12
+start: LOADI_I 1 12
 loadi_i 2 2
 Adda_I 2 2 1
 store_R 0 2
