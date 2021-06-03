@@ -1,4 +1,8 @@
-﻿using System;
+﻿//A Compiler and Simulator for the ODMIS language
+//Evan Smith
+//5/1/21
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -63,7 +67,7 @@ namespace ODMIS_Homework2
 
                 while (programRunning)
                 {
-                    processor.PrintSystemState();
+                    processor.PrintSystemState(firstInstructionToShow);
                     //get user input - continue or exit
                     userInput = getUserKeyConstrained(instructionPrompt, options);
                     try
@@ -72,17 +76,14 @@ namespace ODMIS_Homework2
                         {
                             //execute instruction
                             programRunning = processor.ProcessNextInstruction();
-                            processor.PrintSystemState(firstInstructionToShow);
                         }
                         else if(userInput == ConsoleKey.UpArrow)
                         {
                             firstInstructionToShow = Math.Max(firstInstructionToShow - 3, 0);
-                            processor.PrintSystemState(firstInstructionToShow);
                         }
                         else if (userInput == ConsoleKey.DownArrow)
                         {
                             firstInstructionToShow = Math.Min(firstInstructionToShow + 3, parsedInstructions.Count - 6);
-                            processor.PrintSystemState(firstInstructionToShow);
                         }
                         else if(userInput == ConsoleKey.Escape)
                         {

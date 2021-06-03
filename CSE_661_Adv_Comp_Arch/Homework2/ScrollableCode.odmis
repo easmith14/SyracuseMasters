@@ -1,0 +1,25 @@
+LOADI_I 1 12
+loadi_i 2 2
+Adda_I 2 2 1
+store_R 0 2
+subi_I 2 2 6
+store_R 1 2
+loadi_i 2 2
+Adda_I 2 2 1
+store_R 0 2
+subi_I 2 2 6
+store_R 1 2
+store_R 1 2
+store_R 1 2
+store_R 1 2
+store_R 1 2
+loadi_i 2 2
+loadi_i 2 2
+loadi_i 2 2
+loadi_i 2 2
+loadi_i 2 2
+Adda_I 2 2 1
+Adda_I 2 2 1
+Adda_I 2 2 1
+Adda_I 2 2 1
+end

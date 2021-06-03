@@ -1,0 +1,72 @@
+.globl main 
+.text
+
+#find min and max value of an array of ints
+main: 
+	# Initialize registers
+	li	$s1, 10		# initialize total count of values
+	la	$s2, array	#load address of array
+	la	$s3, array	#load address of array
+	
+	li	$t1, 0		# initialize min counter
+	lw	$t2, ($s2)	# initialize min
+	li	$t3, 0		# initialize max counter
+	lw	$t4, ($s2)	# initialize max
+	
+	
+#iterate over loop to find min value
+min_loop:
+	bge 	$t1, $s1, max_loop	#check that loop is valid
+	lw 	$t5 ($s2)		#load next element of array
+	bge 	$t5, $t2, endif_min	#if this is new min, update
+	move 	$t2, $t5
+endif_min:
+	addi	$t1, $t1, 1		#increment counter
+	addi	$s2, $s2, 4
+	j 	min_loop
+		
+
+#iterate over loop to find max value
+max_loop:
+	bge 	$t3, $s1, exit		#check that loop is valid
+	lw 	$t5 ($s3)		#load next element of array
+	ble 	$t5, $t4, endif_max	#if this is new max, update
+	move 	$t4, $t5
+endif_max:
+	addi	$t3, $t3, 1		#increment counter
+	addi	$s3, $s3, 4
+	j 	max_loop
+
+#output the min and max value
+exit:
+	# print_string syscall code = 4
+	# print_int syscall code = 1
+
+	# Print min
+	li 	$v0,4		
+	la	$a0, min_msg
+	syscall
+	li 	$v0,1	
+	move	$a0, $t2
+	syscall
+	
+	
+	# Print max
+	li 	$v0,4	
+	la	$a0, max_msg
+	syscall
+	li 	$v0,1	
+	move	$a0, $t4
+	syscall
+
+	#exit program
+	li	$v0, 10
+	syscall
+
+.data
+#load in the array to be processed
+array: 	.word 20, 0, 1, 2, 33, 4, 5, 6, 7, -1
+#Hold message literals
+min_msg:	.asciiz	"Min = "
+max_msg:	.asciiz	"\nMax = "
+nl:     	.asciiz	"\n"
