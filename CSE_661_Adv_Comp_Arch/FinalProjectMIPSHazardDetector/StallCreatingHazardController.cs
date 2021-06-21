@@ -5,12 +5,12 @@ using System.Text;
 
 namespace FinalProjectMIPSHazardDetector
 {
-    public class NoActionHazardController : IHazardController
+    public class StallCreatingHazardController : IHazardController
     {
         private Queue<Instruction> mInputInstructions;
-        public NoActionHazardController(Queue<Instruction> inputInstructions)
+        public StallCreatingHazardController(Queue<Instruction> inputInstructions)
         {
-            if(inputInstructions.Count == 0)
+            if (inputInstructions.Count == 0)
             {
                 throw new Exception("Code must be at least one instruction");
             }
@@ -22,7 +22,7 @@ namespace FinalProjectMIPSHazardDetector
             var activeInstructions = new Queue<Instruction>();
             var processedInstructions = new Queue<Instruction>();
             activeInstructions.Enqueue(mInputInstructions.Dequeue());
-            
+
             string outputInstructions = "";
             int clockCycle = 1;
 
@@ -36,27 +36,37 @@ namespace FinalProjectMIPSHazardDetector
                 //increment current instructions' pipeline stage
                 foreach (var instruction in activeInstructions)
                 {
-                    if(instruction.CurrentStage != PipelineStage.Complete)
+                    if (instruction.CurrentStage != PipelineStage.Complete)
                     {
-                        instruction.CurrentStage++;
+                        PipelineStage nextStage = instruction.CurrentStage + 1;
+                        instruction.IsStalled = false;
 
                         //check to see if there are any required registers that are reserved
                         foreach (var register in instruction.RegistersRequired)
                         {
                             //should this register be reserved?
-                            if(register.FreedStage > instruction.CurrentStage)
+                            if (register.FreedStage > nextStage)
                             {
                                 //look for conflicts within the registers
                                 if (reservedRegisters.Contains(register.RegisterNumber))
                                 {
                                     instruction.ConflictRegisters.Add(register.RegisterNumber);
                                     instruction.ConflictStages.Add(instruction.CurrentStage);
+                                    if(nextStage != PipelineStage.F)
+                                    {
+                                        instruction.IsStalled = true;
+                                    }
                                 }
                                 else
                                 {
                                     reservedRegisters.Add(register.RegisterNumber);
                                 }
                             }
+                        }
+
+                        if (!instruction.IsStalled)
+                        {
+                            instruction.CurrentStage = nextStage;
                         }
 
                         if (instruction.CurrentStage == PipelineStage.D)
@@ -91,7 +101,7 @@ namespace FinalProjectMIPSHazardDetector
             }
 
             //format the output appropriately
-            foreach(var instruction in processedInstructions)
+            foreach (var instruction in processedInstructions)
             {
                 outputInstructions += $"{instruction.InstructionString, 15} | ";
 
@@ -100,18 +110,6 @@ namespace FinalProjectMIPSHazardDetector
                     outputInstructions += " ";
                 }
                 outputInstructions += instruction.PipelineStagesUsed;
-
-                if(instruction.ConflictRegisters.Count > 0)
-                {
-                    outputInstructions += " (";
-
-                    foreach (var register in instruction.ConflictRegisters.Distinct())
-                    {
-                        outputInstructions += $" R{register} ";
-                    }
-
-                    outputInstructions += ")";
-                }
 
                 outputInstructions += "\n";
             }

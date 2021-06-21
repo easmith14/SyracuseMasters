@@ -23,12 +23,13 @@ namespace FinalProjectMIPSHazardDetector
 
                 //parse the file into Instructions
                 var instructionParser = new InstructionParser(selectedProgram);
-                var parsedInstructions = instructionParser.Parse();
 
                 //create a set of controllers to handle cases differently
                 var hazardControllers = new List<IHazardController>()
                 {
-                    new NoActionHazardController(parsedInstructions)
+                    new NoActionHazardController(instructionParser.Parse(false)),
+                    //new StallCreatingHazardController(instructionParser.Parse(false)),
+                    //new StallCreatingHazardController(instructionParser.Parse(true))
                 };
 
                 //run each controller

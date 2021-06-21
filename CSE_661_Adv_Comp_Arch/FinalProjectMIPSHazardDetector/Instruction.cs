@@ -15,7 +15,7 @@ namespace FinalProjectMIPSHazardDetector
         public List<PipelineStage> ConflictStages { get; set; }
         public int ClockCycleOffset { get; set; }
         public string PipelineStagesUsed = "";
-        public Instruction(string instructionString, OpCode opCode, Dictionary<int, RegisterType> registersRequired, bool isForwarding)
+        public Instruction(string instructionString, OpCode opCode, List<Tuple<int, RegisterType>> registersRequired, bool isForwarding)
         {
             InstructionString = instructionString;
             OpCode = opCode;
@@ -30,7 +30,7 @@ namespace FinalProjectMIPSHazardDetector
         {
             if (IsStalled)
             {
-                PipelineStagesUsed += " S";
+                PipelineStagesUsed += $" S";
             }
             else
             {
@@ -38,7 +38,7 @@ namespace FinalProjectMIPSHazardDetector
             }
         }
 
-        private List<RequiredRegister> makeRequiredRegisterMapping(Dictionary<int, RegisterType> registers, bool isForwarding)
+        private List<RequiredRegister> makeRequiredRegisterMapping(List<Tuple<int, RegisterType>> registers, bool isForwarding)
         {
             var requiredRegisters = new List<RequiredRegister>();
 
@@ -50,27 +50,27 @@ namespace FinalProjectMIPSHazardDetector
                     {
                         case OpCode.ADD:
                         case OpCode.SUB:
-                            if (register.Value == RegisterType.Read)
+                            if (register.Item2 == RegisterType.Read)
                             {
-                                var entry = new RequiredRegister(register.Key, PipelineStage.D, PipelineStage.M);
+                                var entry = new RequiredRegister(register.Item1, PipelineStage.D, PipelineStage.M);
                                 requiredRegisters.Add(entry);
                             }
                             else
                             {
-                                var entry = new RequiredRegister(register.Key, PipelineStage.D, PipelineStage.M);
+                                var entry = new RequiredRegister(register.Item1, PipelineStage.D, PipelineStage.M);
                                 requiredRegisters.Add(entry);
                             }
                             break;
-                        case OpCode.LW:
-                        case OpCode.SW:
-                            if (register.Value == RegisterType.Read)
+                        case OpCode.LDW:
+                        case OpCode.SVW:
+                            if (register.Item2 == RegisterType.Read)
                             {
-                                var entry = new RequiredRegister(register.Key, PipelineStage.D, PipelineStage.M);
+                                var entry = new RequiredRegister(register.Item1, PipelineStage.D, PipelineStage.M);
                                 requiredRegisters.Add(entry);
                             }
                             else
                             {
-                                var entry = new RequiredRegister(register.Key, PipelineStage.D, PipelineStage.W);
+                                var entry = new RequiredRegister(register.Item1, PipelineStage.D, PipelineStage.W);
                                 requiredRegisters.Add(entry);
                             }
                             break;
@@ -78,14 +78,14 @@ namespace FinalProjectMIPSHazardDetector
                 }
                 else
                 {
-                    if (register.Value == RegisterType.Read)
+                    if (register.Item2 == RegisterType.Read)
                     {
-                        var entry = new RequiredRegister(register.Key, PipelineStage.D, PipelineStage.M);
+                        var entry = new RequiredRegister(register.Item1, PipelineStage.D, PipelineStage.M);
                         requiredRegisters.Add(entry);
                     }
                     else
                     {
-                        var entry = new RequiredRegister(register.Key, PipelineStage.D, PipelineStage.Complete);
+                        var entry = new RequiredRegister(register.Item1, PipelineStage.D, PipelineStage.Complete);
                         requiredRegisters.Add(entry);
                     }
                 }
