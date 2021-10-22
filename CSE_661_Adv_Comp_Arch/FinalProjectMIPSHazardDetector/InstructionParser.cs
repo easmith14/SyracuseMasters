@@ -19,20 +19,18 @@ namespace FinalProjectMIPSHazardDetector
             var rawInstructions = new List<string>(File.ReadAllLines(mProgramPath));
             var parsedInstructions = new Queue<Instruction>();
 
-            //TODO: actually parse
-
-            try
+            foreach(var rawInstruction in rawInstructions)
             {
-                foreach(var rawInstruction in rawInstructions)
+                var components = rawInstruction.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                OpCode opcode;
+                if (!Enum.TryParse(components[0].ToUpper(), true, out opcode) || !Enum.IsDefined(typeof(OpCode), opcode))
                 {
-                    var components = rawInstruction.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                    OpCode opcode;
-                    if (!Enum.TryParse(components[0], true, out opcode) || !Enum.IsDefined(typeof(OpCode), opcode))
-                    {
-                        throw new Exception($"Provided OpCode {components[0]} is not a recognized code.");
-                    }
+                    throw new Exception($"Provided OpCode {components[0]} is not a recognized code.");
+                }
 
-                    if(opcode == OpCode.ADD || opcode == OpCode.SUB)
+                try
+                {
+                    if (opcode == OpCode.ADD || opcode == OpCode.SUB)
                     {
                         var registers = new List<Tuple<int, RegisterType>>();
 
@@ -48,7 +46,7 @@ namespace FinalProjectMIPSHazardDetector
 
                         parsedInstructions.Enqueue(new Instruction(rawInstruction, opcode, registers, useForwarding));
                     }
-                    if (opcode == OpCode.SVW || opcode == OpCode.LDW)
+                    if (opcode == OpCode.SW || opcode == OpCode.LW)
                     {
                         var registers = new List<Tuple<int, RegisterType>>();
 
@@ -63,26 +61,11 @@ namespace FinalProjectMIPSHazardDetector
                         parsedInstructions.Enqueue(new Instruction(rawInstruction, opcode, registers, useForwarding));
                     }
                 }
+                catch
+                {
+                    throw new Exception($"The instruction {rawInstruction} could not be properly parsed.");
+                }
             }
-            catch (Exception e)
-            {
-                throw;
-            }
-
-            //parse into instruction object
-            //reserved register set
-            //opcode
-
-            //parsedInstructions.Enqueue(new Instruction("ADD R1, R2, 2", OpCode.ADD, new Dictionary<int, RegisterType>() 
-            //{ 
-            //    { 1, RegisterType.Written },
-            //    { 2, RegisterType.Read }
-            //}, useForwarding));
-            //parsedInstructions.Enqueue(new Instruction("SUB R1, R2, 4", OpCode.SUB, new Dictionary<int, RegisterType>()
-            //{
-            //    { 1, RegisterType.Written },
-            //    { 2, RegisterType.Read }
-            //}, useForwarding));
 
             return parsedInstructions;
         }

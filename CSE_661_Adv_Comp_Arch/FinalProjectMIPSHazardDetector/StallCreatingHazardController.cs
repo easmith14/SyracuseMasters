@@ -8,13 +8,15 @@ namespace FinalProjectMIPSHazardDetector
     public class StallCreatingHazardController : IHazardController
     {
         private Queue<Instruction> mInputInstructions;
-        public StallCreatingHazardController(Queue<Instruction> inputInstructions)
+        private bool mIsForwarding;
+        public StallCreatingHazardController(Queue<Instruction> inputInstructions, bool isForwarding)
         {
             if (inputInstructions.Count == 0)
             {
                 throw new Exception("Code must be at least one instruction");
             }
             mInputInstructions = inputInstructions;
+            mIsForwarding = isForwarding;
         }
 
         public string HandleHazards()
@@ -41,28 +43,28 @@ namespace FinalProjectMIPSHazardDetector
                         PipelineStage nextStage = instruction.CurrentStage + 1;
                         instruction.IsStalled = false;
 
+                        List<int> newReservedRegisters = new List<int>();
                         //check to see if there are any required registers that are reserved
                         foreach (var register in instruction.RegistersRequired)
                         {
                             //should this register be reserved?
-                            if (register.FreedStage > nextStage)
+                            if (register.NeededStage <= nextStage && register.FreedStage > nextStage)
                             {
                                 //look for conflicts within the registers
                                 if (reservedRegisters.Contains(register.RegisterNumber))
                                 {
                                     instruction.ConflictRegisters.Add(register.RegisterNumber);
                                     instruction.ConflictStages.Add(instruction.CurrentStage);
-                                    if(nextStage != PipelineStage.F)
-                                    {
-                                        instruction.IsStalled = true;
-                                    }
+                                    instruction.IsStalled = true;
                                 }
                                 else
                                 {
-                                    reservedRegisters.Add(register.RegisterNumber);
+                                    newReservedRegisters.Add(register.RegisterNumber);
                                 }
                             }
                         }
+
+                        reservedRegisters.AddRange(newReservedRegisters);
 
                         if (!instruction.IsStalled)
                         {
@@ -101,6 +103,9 @@ namespace FinalProjectMIPSHazardDetector
             }
 
             //format the output appropriately
+            string title = mIsForwarding ? "With Forwarding Unit" : "Without Forwarding Unit";
+            outputInstructions += $"\n{new string('*', 50)}\n{title}:\n{new string('*', 50)}\n";
+
             foreach (var instruction in processedInstructions)
             {
                 outputInstructions += $"{instruction.InstructionString, 15} | ";

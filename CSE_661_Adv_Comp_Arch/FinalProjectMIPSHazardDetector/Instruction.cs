@@ -52,7 +52,7 @@ namespace FinalProjectMIPSHazardDetector
                         case OpCode.SUB:
                             if (register.Item2 == RegisterType.Read)
                             {
-                                var entry = new RequiredRegister(register.Item1, PipelineStage.D, PipelineStage.M);
+                                var entry = new RequiredRegister(register.Item1, PipelineStage.D, PipelineStage.X);
                                 requiredRegisters.Add(entry);
                             }
                             else
@@ -61,11 +61,11 @@ namespace FinalProjectMIPSHazardDetector
                                 requiredRegisters.Add(entry);
                             }
                             break;
-                        case OpCode.LDW:
-                        case OpCode.SVW:
+                        case OpCode.LW:
+                        case OpCode.SW:
                             if (register.Item2 == RegisterType.Read)
                             {
-                                var entry = new RequiredRegister(register.Item1, PipelineStage.D, PipelineStage.M);
+                                var entry = new RequiredRegister(register.Item1, PipelineStage.D, PipelineStage.X);
                                 requiredRegisters.Add(entry);
                             }
                             else

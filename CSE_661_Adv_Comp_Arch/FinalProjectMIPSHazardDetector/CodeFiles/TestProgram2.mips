@@ -1,0 +1,8 @@
+Add R0 R1 R1
+Add R0 R2
+Lw R3 0(R4)
+Add R4 R4 4
+Add R3 R3 5
+Sw R3 0(R5)
+Add R5 R5 4
+Add R0 R0 1

@@ -6,6 +6,6 @@ namespace FinalProjectMIPSHazardDetector
 {
     public enum OpCode
     {
-        ADD, SUB, LDW, SVW
+        ADD, SUB, LW, SW
     }
 }

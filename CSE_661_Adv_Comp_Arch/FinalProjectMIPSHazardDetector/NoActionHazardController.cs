@@ -91,26 +91,20 @@ namespace FinalProjectMIPSHazardDetector
             }
 
             //format the output appropriately
+            outputInstructions += $"\n{new string('*', 50)}\nWithout Any Solution:\n{new string('*', 50)}\n";
+
             foreach(var instruction in processedInstructions)
             {
                 outputInstructions += $"{instruction.InstructionString, 15} | ";
 
-                for (int i = 0; i < instruction.ClockCycleOffset; i++)
-                {
-                    outputInstructions += " ";
-                }
-                outputInstructions += instruction.PipelineStagesUsed;
-
                 if(instruction.ConflictRegisters.Count > 0)
                 {
-                    outputInstructions += " (";
+                    outputInstructions += "Hazards for";
 
                     foreach (var register in instruction.ConflictRegisters.Distinct())
                     {
                         outputInstructions += $" R{register} ";
                     }
-
-                    outputInstructions += ")";
                 }
 
                 outputInstructions += "\n";
