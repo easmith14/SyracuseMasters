@@ -339,3 +339,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 *.mp4
+CIS_600_Fund_Data_Mining/HW2/Weather Forecast Testing.csv
+CIS_600_Fund_Data_Mining/HW2/Weather Forecast Training.csv
